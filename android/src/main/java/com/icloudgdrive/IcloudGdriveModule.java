@@ -7,10 +7,22 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.Scope;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.DriveScopes;
+
+import java.util.Collections;
+import java.util.List;
 
 @ReactModule(name = IcloudGdriveModule.NAME)
 public class IcloudGdriveModule extends ReactContextBaseJavaModule {
   public static final String NAME = "IcloudGdrive";
+  private GoogleSignInClient mGoogleSignInClient;
 
   public IcloudGdriveModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -22,11 +34,39 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule {
     return NAME;
   }
 
-
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
   @ReactMethod
-  public void multiply(double a, double b, Promise promise) {
-    promise.resolve(a * b);
+  public void SetupGoogleDrive(String clientId, Mode mode) throws IllegalArgumentException {
+
+    GoogleSignInOptions gso;
+
+    switch (mode) {
+      case Appdata:
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+          .requestEmail()
+          .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
+          .requestServerAuthCode(clientId)
+          .requestIdToken(clientId)
+          .build();
+        break;
+      case Documents:
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+          .requestScopes(new Scope(Scopes.DRIVE_FULL))
+          .requestServerAuthCode(clientId)
+          .requestIdToken(clientId)
+          .build();
+        break;
+      case Both:
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+          .requestScopes(new Scope(Scopes.DRIVE_FULL), new Scope(Scopes.DRIVE_FULL))
+          .requestServerAuthCode(clientId)
+          .requestIdToken(clientId)
+          .build();
+        break;
+      default:
+        throw new IllegalArgumentException("Auth mode not understood");
+    }
+
+
+    mGoogleSignInClient = GoogleSignIn.getClient(getCurrentActivity(), gso);
   }
 }
