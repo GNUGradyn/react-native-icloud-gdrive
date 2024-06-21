@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
+import type Mode from './mode';
 
 const LINKING_ERROR =
   `The package 'react-native-icloud-gdrive' doesn't seem to be linked. Make sure: \n\n` +
@@ -17,6 +18,6 @@ const IcloudGdrive = NativeModules.IcloudGdrive
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return IcloudGdrive.multiply(a, b);
+export function setupGoogleDrive(clientId: string, mode: Mode): void {
+  return IcloudGdrive.SetupGoogleDrive(clientId, mode);
 }

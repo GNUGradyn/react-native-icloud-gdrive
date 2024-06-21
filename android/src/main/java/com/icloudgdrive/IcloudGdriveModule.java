@@ -35,8 +35,9 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void SetupGoogleDrive(String clientId, Mode mode) throws IllegalArgumentException {
+  public void SetupGoogleDrive(String clientId, int modeValue) throws IllegalArgumentException {
 
+    Mode mode = Mode.fromValue(modeValue);
     GoogleSignInOptions gso;
 
     switch (mode) {
