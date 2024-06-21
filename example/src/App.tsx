@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import { SafeAreaView, TextInput, Platform, Button, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { setupGoogleDrive } from 'react-native-icloud-gdrive';
+import { signInWithGoogle } from 'react-native-icloud-gdrive';
 import Mode from '../../src/mode';
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
   return (
     <SafeAreaView>
       {Platform.OS == 'android' && <>
-        <Text>setupGoogleDrive</Text>
+        <Text>SignInWithGoogle</Text>
         <TextInput placeholder='clientID' value={clientId} onChangeText={setClientId}/>
         <View style={{flexDirection: "row", justifyContent: "space-evenly"}}>
           <TouchableOpacity onPress={()=>{setMode(Mode.Appdata)}} style={[styles.button, {backgroundColor: mode == Mode.Appdata ? "green" : "#2296f3"}]}><Text>AppData</Text></TouchableOpacity>
@@ -21,7 +21,7 @@ export default function App() {
           <TouchableOpacity onPress={()=>{setMode(Mode.Both)}} style={[styles.button, {backgroundColor: mode == Mode.Both ? "green" : "#2296f3"}]}><Text>Both</Text></TouchableOpacity>
         </View>
         <Button title='Setup' onPress={() => {
-          setupGoogleDrive(clientId, mode)
+          signInWithGoogle(clientId, mode)
         }}/>
       </>}
     </SafeAreaView>

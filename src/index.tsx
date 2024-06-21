@@ -18,6 +18,6 @@ const IcloudGdrive = NativeModules.IcloudGdrive
       }
     );
 
-export function setupGoogleDrive(clientId: string, mode: Mode): void {
-  return IcloudGdrive.SetupGoogleDrive(clientId, mode);
+export function signInWithGoogle(clientId: string, mode: Mode): void {
+  return IcloudGdrive.SignInWithGoogle(clientId, mode);
 }

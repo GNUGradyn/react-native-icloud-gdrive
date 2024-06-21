@@ -1,5 +1,7 @@
 package com.icloudgdrive;
 
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Promise;
@@ -19,7 +21,9 @@ import java.util.List;
 @ReactModule(name = IcloudGdriveModule.NAME)
 public class IcloudGdriveModule extends ReactContextBaseJavaModule {
   public static final String NAME = "IcloudGdrive";
+  private static final int RC_SIGN_IN = 9001;
   private GoogleSignInClient mGoogleSignInClient;
+  private Promise signInPromise;
 
   public IcloudGdriveModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -32,7 +36,9 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void SetupGoogleDrive(String clientId, int modeValue) throws IllegalArgumentException {
+  public void SignInWithGoogle(String clientId, int modeValue) throws IllegalArgumentException {
+
+    android.app.Activity activity = getCurrentActivity();
 
     Mode mode = Mode.fromValue(modeValue);
     GoogleSignInOptions gso;
@@ -65,6 +71,8 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule {
     }
 
 
-    mGoogleSignInClient = GoogleSignIn.getClient(getCurrentActivity(), gso);
+    mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
+    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+    activity.startActivityForResult(signInIntent, RC_SIGN_IN);
   }
 }
