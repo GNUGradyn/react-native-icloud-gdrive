@@ -20,8 +20,13 @@ export default function App() {
           <TouchableOpacity onPress={()=>{setMode(Mode.Documents)}} style={[styles.button, {backgroundColor: mode == Mode.Documents ? "green" : "#2296f3"}]}><Text>Documents</Text></TouchableOpacity>
           <TouchableOpacity onPress={()=>{setMode(Mode.Both)}} style={[styles.button, {backgroundColor: mode == Mode.Both ? "green" : "#2296f3"}]}><Text>Both</Text></TouchableOpacity>
         </View>
-        <Button title='Setup' onPress={() => {
-          signInWithGoogle(clientId, mode)
+        <Button title='Setup' onPress={async () => {
+          try {
+            await signInWithGoogle(clientId, mode);
+          } catch (error: any) {
+            console.error(error);
+            throw error
+          }
         }}/>
       </>}
     </SafeAreaView>
