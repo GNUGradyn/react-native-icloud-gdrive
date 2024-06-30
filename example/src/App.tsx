@@ -9,6 +9,7 @@ export default function App() {
 
   const [clientId, setClientId] = useState<string>("");
   const [mode, setMode] = useState<Mode>(Mode.Appdata);
+  const [authCode, setAuthCode] = useState<String>("");
 
   return (
     <SafeAreaView>
@@ -21,8 +22,9 @@ export default function App() {
           <TouchableOpacity onPress={()=>{setMode(Mode.Both)}} style={[styles.button, {backgroundColor: mode == Mode.Both ? "green" : "#2296f3"}]}><Text>Both</Text></TouchableOpacity>
         </View>
         <Button title='Setup' onPress={() => {
-          signInWithGoogle(clientId, mode)
+          signInWithGoogle(clientId, mode).then(x => setAuthCode(x.authCode))
         }}/>
+        <Text>authCode: {authCode}</Text>
       </>}
     </SafeAreaView>
   );

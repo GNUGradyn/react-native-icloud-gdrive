@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 import type Mode from './mode';
+import type SIgnInWithGoogleResult from '../example/src/SignInWithGoogleResponse';
 
 const LINKING_ERROR =
   `The package 'react-native-icloud-gdrive' doesn't seem to be linked. Make sure: \n\n` +
@@ -18,6 +19,6 @@ const IcloudGdrive = NativeModules.IcloudGdrive
       }
     );
 
-export function signInWithGoogle(clientId: string, mode: Mode): void {
+export function signInWithGoogle(clientId: string, mode: Mode): Promise<SIgnInWithGoogleResult> {
   return IcloudGdrive.SignInWithGoogle(clientId, mode);
 }
