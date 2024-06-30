@@ -1,10 +1,12 @@
 package com.icloudgdrive;
 
 import android.app.Activity;
+import android.app.Activity;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -12,12 +14,16 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +33,7 @@ import java.util.List;
 
 @ReactModule(name = IcloudGdriveModule.NAME)
 public class IcloudGdriveModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+public class IcloudGdriveModule extends ReactContextBaseJavaModule implements ActivityEventListener {
   public static final String NAME = "IcloudGdrive";
   private static final int RC_SIGN_IN = 9001;
   private GoogleSignInClient mGoogleSignInClient;
@@ -34,6 +41,7 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule implements Ac
 
   public IcloudGdriveModule(ReactApplicationContext reactContext) {
     super(reactContext);
+    reactContext.addActivityEventListener(this);
     reactContext.addActivityEventListener(this);
   }
 
@@ -48,7 +56,8 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule implements Ac
 
     signInPromise = promise;
 
-    android.app.Activity activity = getCurrentActivity();
+    Activity activity = getCurrentActivity();
+    signInPromise = promise;
 
     Mode mode = Mode.fromValue(modeValue);
     GoogleSignInOptions gso;
@@ -59,27 +68,24 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule implements Ac
           .requestEmail()
           .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
           .requestServerAuthCode(clientId)
-          .requestIdToken(clientId)
           .build();
         break;
       case Documents:
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
           .requestScopes(new Scope(Scopes.DRIVE_FULL))
           .requestServerAuthCode(clientId)
-          .requestIdToken(clientId)
           .build();
         break;
       case Both:
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-          .requestScopes(new Scope(Scopes.DRIVE_FULL), new Scope(Scopes.DRIVE_FULL))
+          .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER), new Scope(Scopes.DRIVE_FULL))
           .requestServerAuthCode(clientId)
-          .requestIdToken(clientId)
           .build();
         break;
       default:
-        throw new IllegalArgumentException("Auth mode not understood");
+        promise.reject("Invalid mode", "Auth mode not understood");
+        return promise;
     }
-
 
     mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
