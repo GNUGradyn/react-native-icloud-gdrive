@@ -33,7 +33,6 @@ import java.util.List;
 
 @ReactModule(name = IcloudGdriveModule.NAME)
 public class IcloudGdriveModule extends ReactContextBaseJavaModule implements ActivityEventListener {
-public class IcloudGdriveModule extends ReactContextBaseJavaModule implements ActivityEventListener {
   public static final String NAME = "IcloudGdrive";
   private static final int RC_SIGN_IN = 9001;
   private GoogleSignInClient mGoogleSignInClient;
@@ -41,7 +40,6 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule implements Ac
 
   public IcloudGdriveModule(ReactApplicationContext reactContext) {
     super(reactContext);
-    reactContext.addActivityEventListener(this);
     reactContext.addActivityEventListener(this);
   }
 
@@ -84,7 +82,7 @@ public class IcloudGdriveModule extends ReactContextBaseJavaModule implements Ac
         break;
       default:
         promise.reject("Invalid mode", "Auth mode not understood");
-        return promise;
+        return;
     }
 
     mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
